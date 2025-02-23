@@ -505,43 +505,24 @@ Total shift V = ${TProccess(employees).VMen.length + TProccess(employees).VLadie
 Total shift P.O = 0
 
 ${mensCash(employees).count}
-
 ${ladiesCash(employees).count}
-
 ${customerService(employees).count}
-
 ${supervisor(employees).count}
-
 ${mensCash(employees).on}
-
 ${mensCash(employees).off}
-
 ${mensCash(employees).vacation}
- 
 ${ladiesCash(employees).on}
-
 ${ladiesCash(employees).off}
-
 ${ladiesCash(employees).vacation}
-
 ${cashiersAbsent(employees)}
-
 ${customerService(employees).on}
-
 ${customerService(employees).off}
-
 ${customerService(employees).absent}
-
 ${customerService(employees).vacation}
-
 ${supervisor(employees).on}
-
 ${supervisor(employees).off}
-
 ${supervisor(employees).absent}
-
 ${supervisor(employees).vacation}
-
 
 *𝐀𝐭𝐭𝐞𝐧𝐝𝐚𝐜𝐞 𝐑𝐞𝐩𝐨𝐫𝐭  ( Evening duty )  
     `
