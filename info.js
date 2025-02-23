@@ -2,11 +2,16 @@ import mysql from 'mysql2'
 
 const pool = mysql.createPool({
 
-    host: 'sql12.freesqldatabase.com',
-    port: 3306,
-    user: 'sql12763292',
-    password: 'tyvfHRcTGP',
-    database: 'sql12763292'
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "employees"
+
+    // host: 'sql12.freesqldatabase.com',
+    // port: 3306,
+    // user: 'sql12763292',
+    // password: 'tyvfHRcTGP',
+    // database: 'sql12763292'
 
 }).promise()
 
@@ -300,18 +305,18 @@ const mensCash = employees => {
         TProccess(employees).OMen.length >= 1 ||
         TProccess(employees).VMen.length >= 1 ?
         count = `
-    # MENS CASHIERS ON DUTY
-    P           A             O       V     P.O
-    ${TProccess(employees).PMen.length}           ${TProccess(employees).AMen.length}             ${TProccess(employees).OMen.length}       ${TProccess(employees).VMen.length}      0`
+# MENS CASHIERS ON DUTY
+P           A             O       V     P.O
+${TProccess(employees).PMen.length}           ${TProccess(employees).AMen.length}             ${TProccess(employees).OMen.length}       ${TProccess(employees).VMen.length}      0`
         : count = ""
 
     on = `
-    #MENS CASHIER ON DUTY
-    ${TProccess(employees).PMen.length >= 1 ? TProccess(employees).PMen.join("") : "No one"}`
+#MENS CASHIER ON DUTY
+${TProccess(employees).PMen.length >= 1 ? TProccess(employees).PMen.join("") : "No one"}`
 
     off = `
-    #MENS CASHIER OFF DUTY
-    ${TProccess(employees).OMen.length >= 1 ? TProccess(employees).OMen.join("") : "No one"}`
+#MENS CASHIER OFF DUTY
+${TProccess(employees).OMen.length >= 1 ? TProccess(employees).OMen.join("") : "No one"}`
 
     TProccess(employees).VMen.length >= 1 ?
 
@@ -337,24 +342,24 @@ const ladiesCash = employees => {
         TProccess(employees).OLadies.length >= 1 ||
         TProccess(employees).VLadies.length >= 1 ?
         count = `
-    # LADIES CASHIERS ON DUTY 
-    P           A             O       V     P.O
-    ${TProccess(employees).PLadies.length}           ${TProccess(employees).ALadies.length}             ${TProccess(employees).OLadies.length}       ${TProccess(employees).VLadies.length}      0`
+# LADIES CASHIERS ON DUTY 
+P           A             O       V     P.O
+${TProccess(employees).PLadies.length}           ${TProccess(employees).ALadies.length}             ${TProccess(employees).OLadies.length}       ${TProccess(employees).VLadies.length}      0`
         : count = ""
 
     on = `
-    #LADIES CASHIERS ON DUTY
-    ${TProccess(employees).PLadies.length >= 1 ? TProccess(employees).PLadies.join("") : "No one"}`
+#LADIES CASHIERS ON DUTY
+${TProccess(employees).PLadies.length >= 1 ? TProccess(employees).PLadies.join("") : "No one"}`
 
     off = `
-    #LADIES CASHIERS OFF DUTY
-    ${TProccess(employees).OLadies.length >= 1 ? TProccess(employees).OLadies.join("") : "No one"}`
+#LADIES CASHIERS OFF DUTY
+${TProccess(employees).OLadies.length >= 1 ? TProccess(employees).OLadies.join("") : "No one"}`
 
     TProccess(employees).VLadies.length >= 1 ?
 
         vacation = `
-    #LADIES CASHIERS vacation
-    ${TProccess(employees).VLadies.length >= 1 ? TProccess(employees).VLadies.join("") : "No one"}`
+#LADIES CASHIERS vacation
+${TProccess(employees).VLadies.length >= 1 ? TProccess(employees).VLadies.join("") : "No one"}`
         : vacation = ""
 
     return {
@@ -371,11 +376,11 @@ const cashiersAbsent = employees => {
     TProccess(employees).AMen.length >= 1 ||
         TProccess(employees).ALadies.length >= 1 ?
         details = `
-        # MENS & Ladies CASHIERS ABSENT
-        ${TProccess(employees).AMen.join("")}${TProccess(employees).ALadies.join("")}` :
+# MENS & Ladies CASHIERS ABSENT
+${TProccess(employees).AMen.join("")}${TProccess(employees).ALadies.join("")}` :
         details = `
-        # MENS & Ladies CASHIERS ABSENT
-        No one
+# MENS & Ladies CASHIERS ABSENT
+No one
         `
     return details
 }
@@ -425,11 +430,11 @@ ${TProccess(employees).VCS.length >= 1 ? TProccess(employees).VCS.join("") : "No
 
 const supervisor = employees => {
     `
-    # CASHIERS SUPERVISOR
-    P         A         O       V         P.O
-    ${TProccess(employees).PSV.length}       ${TProccess(employees).ASV.length}         ${TProccess(employees).OSV.length}       ${TProccess(employees).VSV.length}          0
+# CASHIERS SUPERVISOR
+P         A         O       V         P.O
+${TProccess(employees).PSV.length}       ${TProccess(employees).ASV.length}         ${TProccess(employees).OSV.length}       ${TProccess(employees).VSV.length}          0
 
-    # CASH SUPERVISOR ON DUTY
+# CASH SUPERVISOR ON DUTY
 ${TProccess(employees).PSV.join("")}
 
 
@@ -507,17 +512,17 @@ ${customerService(employees).count}
 
 ${supervisor(employees).count}
 
- ${mensCash(employees).on}
+${mensCash(employees).on}
 
- ${mensCash(employees).off}
+${mensCash(employees).off}
 
- ${mensCash(employees).vacation}
+${mensCash(employees).vacation}
  
- ${ladiesCash(employees).on}
+${ladiesCash(employees).on}
 
- ${ladiesCash(employees).off}
+${ladiesCash(employees).off}
 
- ${ladiesCash(employees).vacation}
+${ladiesCash(employees).vacation}
 
 ${cashiersAbsent(employees)}
 
