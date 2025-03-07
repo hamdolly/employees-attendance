@@ -16,9 +16,9 @@ app.post('/employee', async (req, res) => {
         var data = req.body
         if (await (await info.check(data.e_No, data.e_Name)).checking == 1) {
             info.insertEmployee(data.e_No, data.e_Name, data.AName, data.position, data.shift, data.gender)
-            res.status(200).send([{message: "The user added succssfuly.", success: 1}])
+            res.status(200).send([{ message: "The user added succssfuly.", success: 1 }])
         } else {
-            res.status(400).send([{message: "This user is arrdy exitsst!", success: 0}])
+            res.status(400).send([{ message: "This user is arrdy exitsst!", success: 0 }])
         }
     } catch (err) {
         res.status(500).send(`Message: ${err.message}`);
@@ -29,6 +29,15 @@ app.post('/template', (req, res) => {
     try {
         var data = req.body
         res.status(200).send(info.createTemplate(data, data[0].shift))
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`);
+    }
+})
+
+app.post('/template/arabic', (req, res) => {
+    try {
+        var data = req.body
+        res.status(200).send(info.createArabicTemplate(data, data[0].shift))
     } catch (err) {
         res.status(500).send(`Message: ${err.message}`);
     }

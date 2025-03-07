@@ -2,16 +2,16 @@ import mysql from 'mysql2'
 
 const pool = mysql.createPool({
 
-    // host: "localhost",
-    // user: "root",
-    // password: "",
-    // database: "employees"
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "employees"
 
-    host: 'sql12.freesqldatabase.com',
-    port: 3306,
-    user: 'sql12763292',
-    password: 'tyvfHRcTGP',
-    database: 'sql12763292'
+    // host: 'sql12.freesqldatabase.com',
+    // port: 3306,
+    // user: 'sql12763292',
+    // password: 'tyvfHRcTGP',
+    // database: 'sql12763292'
 
 }).promise()
 
@@ -138,11 +138,11 @@ const TimeDate = STime => {
 
     today = dd + '-' + mm + '-' + yyyy;
     var time = {
-        first1: ["( 8:45 ) am", "( 5:45 ) pm", "1st"],
-        first2: ["( 9:45 ) am", "( 6:45 ) pm", "1st"],
-        second: ["( 2:00 ) pm", "( 11:00 ) pm", "2nd"],
-        third1: ["( 3:30 ) pm", "( 12:30 ) pm", "3rd"],
-        third2: ["( 4:30 ) pm", "( 1:30 ) pm", "3rd"],
+        first1: ["( 8:45 ) am", "( 2:45 ) pm", "1st"],
+        first2: ["( 1:00 ) am", "( 7:00 ) pm", "2nd"],
+        second: ["( 2:30 ) pm", "( 8:30 ) pm", "3rd"],
+        third1: ["( 8:00 ) pm", "( 2:00 ) am", "4th"],
+        third2: ["( 8:30 ) pm", "( 2:30 ) am", "5th"],
     }
 
     var from, to, shiftOrder
@@ -185,6 +185,8 @@ const TProccess = employees => {
         OLadies = [], OLC = 1,
         VLadies = [], VLC = 1,
 
+        absentCashierArabic = [],
+
         PCS = [], PCC = 1,
         ACS = [], ACC = 1,
         OCS = [], OCC = 1,
@@ -225,11 +227,13 @@ const TProccess = employees => {
 
                     case "M":
                         AMen.push(AMC + "-" + employees[i].name + "\n");
+                        absentCashierArabic.push(AMC + "-" + employees[i].AName + "\n")
                         AMC = AMC + 1;
                         break;
 
                     case "F":
                         ALadies.push(AMC + "-" + employees[i].name + "\n");
+                        absentCashierArabic.push(AMC + "-" + employees[i].AName + "\n")
                         AMC = AMC + 1;
                         break;
                 }
@@ -291,6 +295,7 @@ const TProccess = employees => {
     return {
         PMen, AMen, OMen, VMen,
         PMC, AMC, OMC, VMC,
+        absentCashierArabic,
         PLadies, ALadies, OLadies, VLadies,
         PCS, ACS, OCS, VCS,
         PSV, ASV, OSV, VSV,
@@ -366,7 +371,8 @@ ${TProccess(employees).VLadies.length >= 1 ? TProccess(employees).VLadies.join("
         count,
         on,
         off,
-        vacation
+        vacation,
+
     }
 }
 
@@ -530,6 +536,61 @@ ${supervisor(employees).vacation}
     return template
 }
 
+const cashiersAbsent2 = employees => {
+
+    var details
+    TProccess(employees).AMen.length >= 1 ||
+        TProccess(employees).ALadies.length >= 1 ?
+        details =
+
+        `
+        الفترة/المساء (8:30 - 2:30)
+        التاريخ / 5-3-2025
+        الغياب/
+        ${TProccess(employees).absentCashierArabic.join("")}}
+        `
+        :
+
+        `
+        الفترة/المساء (8:30 - 2:30)
+        التاريخ / 5-3-2025
+        الغياب/
+        لايوجد
+        `
+    // ${TProccess(employees).ALadies.join("")
+    //`
+    // # MENS & Ladies CASHIERS ABSENT
+    // ${TProccess(employees).AMen.join("")}${TProccess(employees).ALadies.join("")}` :
+    //         details = `
+    // # MENS & Ladies CASHIERS ABSENT
+    // No one
+    //         `
+    return details
+}
+
+export const createArabicTemplate = (employees, STime) => {
+    var details
+    TProccess(employees).AMen.length >= 1 ||
+        TProccess(employees).ALadies.length >= 1 ?
+        details =
+
+        `
+${"(" + TimeDate(STime).from.replace("pm", "").replace("am", "") + TimeDate(STime).to.replace("pm", "").replace("am", "") + ")"} الفترة/المساء
+التاريخ / ${TimeDate(STime).today}
+الغياب/
+${TProccess(employees).absentCashierArabic.join("")}
+        `
+        :
+        details =
+        `
+${"(" + TimeDate(STime).from.replace("pm", "").replace("am", "") + TimeDate(STime).to.replace("pm", "").replace("am", "") + ")"} الفترة/المساء
+التاريخ / ${TimeDate(STime).today}
+الغياب/
+لايوجد
+        `
+
+    return details
+}
 
 export const order = () => {// 2 3 4 5 6 7 8 
     // var array = [10, 1, 1, 3, 7, 3, 13, 11, 2, 4]
