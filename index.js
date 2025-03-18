@@ -18,7 +18,7 @@ app.post('/employee', async (req, res) => {
             info.insertEmployee(data.e_No, data.e_Name, data.AName, data.position, data.shift, data.gender)
             res.status(200).send([{ message: "The user added succssfuly.", success: 1 }])
         } else {
-            res.status(400).send([{ message: "This user is arrdy exitsst!", success: 0 }])
+            res.status(400).send([{ message: "This employee is arrdy exitsst!", success: 0 }])
         }
     } catch (err) {
         res.status(500).send(`Message: ${err.message}`);
@@ -60,6 +60,34 @@ app.get('/employees/shift/:shift', async (req, res) => {
     }
 })
 
+app.patch('/employee/shift', async (req, res) => {
+    try {
+        // var { id, shift } = req.params
+        const data = req.body
+        res.status(200).send(await info.changeEmployeeShift(data[0].id, data[0].shift))
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`)
+    }
+})
+
+app.patch('/employee/id', async (req, res) => {
+    try {
+        const data = req.body
+        res.status(200).send(await info.changeEmployeeNumber(data[0].old, data[0].new))
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`)
+    }
+})
+
+app.patch('/employee/name', async (req, res) => {
+    try {
+        const data = req.body
+        res.status(200).send(await info.changeEmployeeNanme(data[0].e_No, data[0].name, data[0].AName))
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`)
+    }
+})
+
 app.get('/employee/ID/:id', async (req, res) => {
     try {
         var { id } = req.params
@@ -69,10 +97,10 @@ app.get('/employee/ID/:id', async (req, res) => {
     }
 })
 
-app.delete('/employee/ID/:id', async (req, res) => {
+app.delete('/employee/number/:e_No', async (req, res) => {
     try {
-        var { id } = req.params
-        await info.deleteEmployee(`${id}`)
+        var { e_No } = req.params
+        await info.deleteEmployee(`${e_No}`)
         res.status(200).send("The employee has been deleted!")
     } catch (err) {
         res.status(500).send(`Message: ${err.message}`)

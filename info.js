@@ -2,16 +2,16 @@ import mysql from 'mysql2'
 
 const pool = mysql.createPool({
 
-    // host: "localhost",
-    // user: "root",
-    // password: "",
-    // database: "employees"
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "employees"
 
-    host: 'sql12.freesqldatabase.com',
-    port: 3306,
-    user: 'sql12763292',
-    password: 'tyvfHRcTGP',
-    database: 'sql12763292'
+    // host: 'sql12.freesqldatabase.com',
+    // port: 3306,
+    // user: 'sql12763292',
+    // password: 'tyvfHRcTGP',
+    // database: 'sql12763292'
 
 }).promise()
 
@@ -104,8 +104,8 @@ export const getShiftEmployees = async shift => {
     return data
 }
 
-export const deleteEmployee = async (ID) => {
-    var sql = `UPDATE employees SET BLOCK = 1 WHERE ID = ${ID}`
+export const deleteEmployee = async (e_No) => {
+    var sql = `UPDATE employees SET BLOCK = 1 WHERE e_No = ${e_No}`
     await pool.query(sql)
 }
 
@@ -590,6 +590,33 @@ ${"(" + TimeDate(STime).from.replace("pm", "").replace("am", "") + TimeDate(STim
         `
 
     return details
+}
+
+export const changeEmployeeShift = async (id, shift) => {
+    var data = []
+    var sql = `UPDATE employees SET shift_number = ${shift} WHERE e_No = ${id}`
+    await pool.query(sql)
+}
+
+export const changeEmployeeNumber = async (oldNo, newNo) => {
+    var data = []
+    var sql = `UPDATE employees SET e_No = ${newNo} WHERE e_No = ${oldNo}`
+    var [check] = await pool.query(`SELECT COUNT(e_No) AS quantati, e_No FROM employees WHERE e_No = ${newNo}`)
+    check[0].quantati >= 1 ? data.push(`This employee number ${newNo} is already exists!`) :
+        await pool.query(sql) + data.push(`The employee number ${oldNo} has changed to ${newNo}.`)
+    return data
+}
+
+export const changeEmployeeNanme = async (e_No, newName, newAName) => {
+    var data = []
+    var sql = [
+        `UPDATE employees SET name = '${newName}' WHERE e_No = ${e_No}`,
+        `UPDATE employees SET AName = '${newAName}' WHERE e_No = ${e_No}`
+    ]
+    // type = "E" ? await pool.query(sql[0]) : await pool.query(sql[1])
+    await pool.query(sql[0])
+    await pool.query(sql[1])
+    return data
 }
 
 export const order = () => {// 2 3 4 5 6 7 8 
