@@ -239,9 +239,13 @@ const TProccess = employees => {
                 }
             } else if (employees[i].position == "cs") {
                 ACS.push(ACC + "-" + employees[i].name + "\n");
+                absentCashierArabic.push(AMC + "-" + employees[i].AName + "\n")
+                AMC = AMC + 1;
                 ACC = ACC + 1;
             } else if (employees[i].position == "sv") {
                 ASV.push(ASC + "-" + employees[i].name + "\n");
+                absentCashierArabic.push(AMC + "-" + employees[i].AName + "\n")
+                AMC = AMC + 1;
                 ASC = ASC + 1;
             }
         }
@@ -530,43 +534,12 @@ ${supervisor(employees).off}
 ${supervisor(employees).absent}
 ${supervisor(employees).vacation}
 
-*𝐀𝐭𝐭𝐞𝐧𝐝𝐚𝐜𝐞 𝐑𝐞𝐩𝐨𝐫𝐭  ( Evening duty )  
+*𝐀𝐭𝐭𝐞𝐧𝐝𝐚𝐜𝐞 𝐑𝐞𝐩𝐨𝐫𝐭  ( ${TimeDate(STime).shiftOrder == "1st" ? "Morning" : "Evening"} duty )  
     `
 
     return template
 }
 
-const cashiersAbsent2 = employees => {
-
-    var details
-    TProccess(employees).AMen.length >= 1 ||
-        TProccess(employees).ALadies.length >= 1 ?
-        details =
-
-        `
-        الفترة/المساء (8:30 - 2:30)
-        التاريخ / 5-3-2025
-        الغياب/
-        ${TProccess(employees).absentCashierArabic.join("")}}
-        `
-        :
-
-        `
-        الفترة/المساء (8:30 - 2:30)
-        التاريخ / 5-3-2025
-        الغياب/
-        لايوجد
-        `
-    // ${TProccess(employees).ALadies.join("")
-    //`
-    // # MENS & Ladies CASHIERS ABSENT
-    // ${TProccess(employees).AMen.join("")}${TProccess(employees).ALadies.join("")}` :
-    //         details = `
-    // # MENS & Ladies CASHIERS ABSENT
-    // No one
-    //         `
-    return details
-}
 
 export const createArabicTemplate = (employees, STime) => {
     var details
@@ -575,7 +548,7 @@ export const createArabicTemplate = (employees, STime) => {
         details =
 
         `
-${"(" + TimeDate(STime).from.replace("pm", "").replace("am", "") + TimeDate(STime).to.replace("pm", "").replace("am", "") + ")"} الفترة/المساء
+${"(" + TimeDate(STime).from.replace("pm", "").replace("am", "") + TimeDate(STime).to.replace("pm", "").replace("am", "") + ")"} الفترة/${TimeDate(STime).shiftOrder == "1st" ? "الصباح" : "المساء"}
 التاريخ / ${TimeDate(STime).today}
 الغياب/
 ${TProccess(employees).absentCashierArabic.join("")}
@@ -583,7 +556,7 @@ ${TProccess(employees).absentCashierArabic.join("")}
         :
         details =
         `
-${"(" + TimeDate(STime).from.replace("pm", "").replace("am", "") + TimeDate(STime).to.replace("pm", "").replace("am", "") + ")"} الفترة/المساء
+${"(" + TimeDate(STime).from.replace("pm", "").replace("am", "") + TimeDate(STime).to.replace("pm", "").replace("am", "") + ")"} الفترة/${TimeDate(STime).shiftOrder == "1st" ? "الصباح" : "المساء"}
 التاريخ / ${TimeDate(STime).today}
 الغياب/
 لايوجد
