@@ -138,11 +138,11 @@ const TimeDate = STime => {
 
     today = dd + '-' + mm + '-' + yyyy;
     var time = {
-        first1: ["( 8:45 ) am", "( 2:45 ) pm", "1st"],
-        first2: ["( 1:00 ) am", "( 7:00 ) pm", "2nd"],
-        second: ["( 2:30 ) pm", "( 8:30 ) pm", "3rd"],
-        third1: ["( 8:00 ) pm", "( 2:00 ) am", "4th"],
-        third2: ["( 8:30 ) pm", "( 2:30 ) am", "5th"],
+        first1: ["( 8:45 ) am", "( 5:45 ) pm", "1st"],
+        first2: ["( 9:45 ) am", "( 6:45 ) pm", "1st"],
+        second: ["( 2:00 ) pm", "( 11:00 ) pm", "2nd"],
+        third1: ["( 3:30 ) pm", "( 12:30 ) am", "3rd"],
+        third2: ["( 4:30 ) pm", "( 1:30 ) am", "3rd"],
     }
 
     var from, to, shiftOrder
@@ -548,7 +548,7 @@ export const createArabicTemplate = (employees, STime) => {
         details =
 
         `
-${"(" + TimeDate(STime).from.replace("pm", "").replace("am", "") + TimeDate(STime).to.replace("pm", "").replace("am", "") + ")"} الفترة/${TimeDate(STime).shiftOrder == "1st" ? "الصباح" : "المساء"}
+الفترة/${TimeDate(STime).shiftOrder == "1st" ? "الصباح" : "المساء"}
 التاريخ / ${TimeDate(STime).today}
 الغياب/
 ${TProccess(employees).absentCashierArabic.join("")}
@@ -556,7 +556,7 @@ ${TProccess(employees).absentCashierArabic.join("")}
         :
         details =
         `
-${"(" + TimeDate(STime).from.replace("pm", "").replace("am", "") + TimeDate(STime).to.replace("pm", "").replace("am", "") + ")"} الفترة/${TimeDate(STime).shiftOrder == "1st" ? "الصباح" : "المساء"}
+الفترة/${TimeDate(STime).shiftOrder == "1st" ? "الصباح" : "المساء"}
 التاريخ / ${TimeDate(STime).today}
 الغياب/
 لايوجد
