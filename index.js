@@ -14,7 +14,7 @@ app.get('/', async (req, res) => {
 app.post('/employee', async (req, res) => {
     try {
         var data = req.body
-        if (await (await info.check(data.e_No, data.e_Name)).checking == 1) {
+        if (await (await info.check(data.e_No)).checking == 1) {
             info.insertEmployee(data.e_No, data.e_Name, data.AName, data.position, data.shift, data.gender)
             res.status(200).send([{ message: "The user added succssfuly.", success: 1 }])
         } else {
@@ -120,7 +120,16 @@ app.options('/employee/return/ID/:id', async (req, res) => {
 app.get('/employee/name/:name', async (req, res) => {
     try {
         var { name } = req.params
-        res.status(200).send(await info.getUserByName(`${name}`))
+        res.status(200).send(await info.getEmployeeByName(`${name}`))
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`)
+    }
+})
+
+app.get('/employee/name/arabic/:name', async (req, res) => {
+    try {
+        var { name } = req.params
+        res.status(200).send(await info.getEmployeeByArabicName(`${name}`))
     } catch (err) {
         res.status(500).send(`Message: ${err.message}`)
     }
@@ -134,4 +143,4 @@ app.get("/order/test", async (req, res) => {
     }
 })
 
-app.listen(5000 || process.env.PORT, () => console.log("Started a port 4432"))
+app.listen(5000 || process.env.PORT, () => console.log("Started a port 5000"))

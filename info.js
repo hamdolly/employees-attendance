@@ -2,22 +2,22 @@ import mysql from 'mysql2'
 
 const pool = mysql.createPool({
 
-    //host: "localhost",
-    //user: "root",
-    //password: "",
-    //database: "employees"
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "employees"
 
-     host: 'sql12.freesqldatabase.com',
-     port: 3306,
-     user: 'sql12763292',
-     password: 'tyvfHRcTGP',
-     database: 'sql12763292'
+    //  host: 'sql12.freesqldatabase.com',
+    //  port: 3306,
+    //  user: 'sql12763292',
+    //  password: 'tyvfHRcTGP',
+    //  database: 'sql12763292'
 
 }).promise()
 
-export const check = async (e_No, e_Name) => {
+export const check = async (e_No) => {
     const [check] = await pool.query(`SELECT COUNT(*) AS rs FROM employees 
-    WHERE e_No = ${e_No} AND name = '${e_Name}';`)
+    WHERE e_No = ${e_No}`)
     var checking = 0
     if (check[0].rs >= 1) {
         checking = 0
@@ -64,6 +64,54 @@ export const getEmployee = async (ID) => {
     return data
 }
 
+export const getEmployeeByName = async (name) => {
+    var sql = `SELECT * FROM employees WHERE name = '${name}' AND BLOCK = 0`
+    var data = []
+    var [employee] = await pool.query(sql)
+    employee.length == 0 ?
+        data.push(
+            {
+                "Message:": "No employee found"
+            }
+        )
+        :
+        data.push(
+            {
+                "e_No": employee[0].e_No,
+                "name": employee[0].name,
+                "position": employee[0].position,
+                "shift_number": employee[0].shift_number,
+                "gender": employee[0].gender
+            }
+        )
+        return data
+}
+
+export const getEmployeeByArabicName = async (name) => {
+    var sql = `SELECT * FROM employees WHERE AName = '${name}' AND BLOCK = 0`
+    var data = []
+    var [employee] = await pool.query(sql)
+    employee.length == 0 ?
+        data.push(
+            {
+                "Message:": "No employee found"
+            }
+        )
+        :
+        data.push(
+            {
+                "ID": employee[0].ID,
+                "e_No": employee[0].e_No,
+                "name": employee[0].name,
+                "arabicName": employee[0].AName,
+                "position": employee[0].position,
+                "shift_number": employee[0].shift_number,
+                "gender": employee[0].gender
+            }
+        )
+        return data
+}
+
 export const getEmployees = async () => {
     var sql = `SELECT * FROM employees WHERE BLOCK = 0`
     var data = []
@@ -76,7 +124,8 @@ export const getEmployees = async () => {
                 "arabicName": employee[i].AName,
                 "position": employee[i].position,
                 "shift_number": employee[i].shift_number,
-                "gender": employee[i].gender
+                "gender": employee[i].gender,
+                "checkID": employee[i].checkID
             }
         )
     }
@@ -112,22 +161,6 @@ export const deleteEmployee = async (e_No) => {
 export const returnEmployee = async (ID) => {
     var sql = `UPDATE employees SET BLOCK = 0 WHERE ID = ${ID}`
     await pool.query(sql)
-}
-
-export const getUserByName = async (e_name) => {
-    var sql = `SELECT * FROM employees WHERE name = '${e_name}'`;
-    var data = []
-    var [employee] = await pool.query(sql)
-    data.push(
-        {
-            "e_No": employee[0].e_No,
-            "name": employee[0].name,
-            "position": employee[0].position,
-            "shift_number": employee[0].shift_number,
-            "gender": employee[0].gender,
-        }
-    )
-    return data;
 }
 
 const TimeDate = STime => {
