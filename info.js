@@ -2,11 +2,16 @@ import mysql from 'mysql2'
 
 const pool = mysql.createPool({
 
-    host: 'sql12.freesqldatabase.com',
-    port: 3306,
-    user: 'sql12763292',
-    password: 'tyvfHRcTGP',
-    database: 'sql12763292'
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "employees"
+
+    //  host: 'sql12.freesqldatabase.com',
+    //  port: 3306,
+    //  user: 'sql12763292',
+    //  password: 'tyvfHRcTGP',
+    //  database: 'sql12763292'
 
 }).promise()
 
@@ -22,6 +27,18 @@ export const check = async (e_No) => {
     return {
         checking
     }
+}
+
+export const changePasswor = async (number, password, newPassword) => {
+    var message
+    var [old] = await pool.query(`SELECT * FROM employees WHERE e_No = ${number} AND BLOCK = 0`)
+    console.log(old[0].password)
+    old[0].password == password
+        ?
+        await pool.query(`UPDATE employees SET password = '${newPassword}' WHERE e_No = ${number}`)
+        :
+        message = "Uncurrect old password"
+    return message;
 }
 
 export const insertEmployee = async (e_No, e_Name, AName, position, shift, gender) => {
@@ -114,6 +131,7 @@ export const getEmployees = async () => {
     for (var i = 0; i < employee.length; i++) {
         data.push(
             {
+                "ID": employee[i].ID,
                 "e_No": employee[i].e_No,
                 "name": employee[i].name,
                 "arabicName": employee[i].AName,
@@ -124,7 +142,26 @@ export const getEmployees = async () => {
             }
         )
     }
+    return data
+}
 
+export const getEmployeesByEmployeeNumber = async (number) => {
+    var sql = `SELECT * FROM employees WHERE e_No = ${number} AND BLOCK = 0`
+    var data = []
+    var [employee] = await pool.query(sql)
+    for (var i = 0; i < employee.length; i++) {
+        data.push(
+            {
+                "e_No": employee[i].e_No,
+                "name": employee[i].name,
+                "arabicName": employee[i].AName,
+                "position": employee[i].position,
+                "shift_number": employee[i].shift_number,
+                "gender": employee[i].gender,
+                "checkID": employee[i].checkID
+            }
+        )
+    }
     return data
 }
 

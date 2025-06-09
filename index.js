@@ -11,6 +11,16 @@ app.get('/', async (req, res) => {
 
 })
 
+app.patch('/password', async (req, res) => {
+    try {
+        var data = req.body
+        await info.changePasswor(data[0].e_No, data[0].password, data[0].newPassword)
+        res.status(200).send([{ message: "Password changed successfuly", success: 1 }])
+    } catch (error) {
+        res.status(500).send([{ message: `${error.message}`, success: 0 }])
+    }
+})
+
 app.post('/employee', async (req, res) => {
     try {
         var data = req.body
@@ -46,6 +56,15 @@ app.post('/template/arabic', (req, res) => {
 app.get('/employees/', async (req, res) => {
     try {
         res.status(200).send(await info.getEmployees())
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`)
+    }
+})
+
+app.get('/employee/number/:number', async (req, res) => {
+    try {
+        var { number } = req.params
+        res.status(200).send(await info.getEmployeesByEmployeeNumber(number))
     } catch (err) {
         res.status(500).send(`Message: ${err.message}`)
     }
