@@ -5,7 +5,7 @@ import cors from 'cors'
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin: "https://receipt-counter.w3spaces.com",
+    origin: "*",
 }));
 
 app.get('/', async (req, res) => {
