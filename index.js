@@ -109,6 +109,15 @@ app.patch('/employee/name', async (req, res) => {
     }
 })
 
+app.patch('/employee/position', async (req, res) => {
+    try {
+        const data = req.body
+        res.status(200).send(await info.changeEmployeePosition(data[0].e_No, data[0].newPosition))
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`)
+    }
+})
+
 app.get('/employee/ID/:id', async (req, res) => {
     try {
         var { id } = req.params
