@@ -55,9 +55,44 @@ app.post('/template/arabic', (req, res) => {
     }
 })
 
+app.post('/template/sales/arabic', (req, res) => {
+    try {
+        var data = req.body
+        res.status(200).send(info.createSalesArabicTemplate(data, data[0].shift))
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`);
+    }
+})
+
+app.post('/template/sales', async (req, res) => {
+    try {
+        var data = await req.body
+        res.status(200).send(await info.createSalesTemplate(data, data[0].shift))
+        console.log(data)
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`);
+    }
+})
+
 app.get('/employees/', async (req, res) => {
     try {
         res.status(200).send(await info.getEmployees())
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`)
+    }
+})
+
+app.get('/employees/front-end', async (req, res) => {
+    try {
+        res.status(200).send(await info.getFrontEndEmployees())
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`)
+    }
+})
+
+app.get('/employees/sales', async (req, res) => {
+    try {
+        res.status(200).send(await info.getSalesEmployees())
     } catch (err) {
         res.status(500).send(`Message: ${err.message}`)
     }
@@ -76,6 +111,51 @@ app.get('/employees/shift/:shift', async (req, res) => {
     try {
         var { shift } = req.params
         res.status(200).send(await info.getShiftEmployees(shift))
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`)
+    }
+})
+
+app.get('/employees/front-end/shift/:shift', async (req, res) => {
+    try {
+        var { shift } = req.params
+        res.status(200).send(await info.getFrontEndEmployeesByShift(shift))
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`)
+    }
+})
+
+app.get('/employees/sales/shift/:shift', async (req, res) => {
+    try {
+        var { shift } = req.params
+        res.status(200).send(await info.getSalesEmployeesByShift(shift))
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`)
+    }
+})
+
+app.get('/employee/ID/:id', async (req, res) => {
+    try {
+        var { id } = req.params
+        res.status(200).send(await info.getEmployee(id))
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`)
+    }
+})
+
+app.get('/employee/name/:name', async (req, res) => {
+    try {
+        var { name } = req.params
+        res.status(200).send(await info.getEmployeeByName(`${name}`))
+    } catch (err) {
+        res.status(500).send(`Message: ${err.message}`)
+    }
+})
+
+app.get('/employee/name/arabic/:name', async (req, res) => {
+    try {
+        var { name } = req.params
+        res.status(200).send(await info.getEmployeeByArabicName(`${name}`))
     } catch (err) {
         res.status(500).send(`Message: ${err.message}`)
     }
@@ -118,14 +198,7 @@ app.patch('/employee/position', async (req, res) => {
     }
 })
 
-app.get('/employee/ID/:id', async (req, res) => {
-    try {
-        var { id } = req.params
-        res.status(200).send(await info.getEmployee(id))
-    } catch (err) {
-        res.status(500).send(`Message: ${err.message}`)
-    }
-})
+
 
 app.delete('/employee/number/:e_No', async (req, res) => {
     try {
@@ -142,32 +215,6 @@ app.options('/employee/return/ID/:id', async (req, res) => {
         var { id } = req.params
         await info.returnEmployee(`${id}`)
         res.status(200).send("The employee is returned.")
-    } catch (err) {
-        res.status(500).send(`Message: ${err.message}`)
-    }
-})
-
-app.get('/employee/name/:name', async (req, res) => {
-    try {
-        var { name } = req.params
-        res.status(200).send(await info.getEmployeeByName(`${name}`))
-    } catch (err) {
-        res.status(500).send(`Message: ${err.message}`)
-    }
-})
-
-app.get('/employee/name/arabic/:name', async (req, res) => {
-    try {
-        var { name } = req.params
-        res.status(200).send(await info.getEmployeeByArabicName(`${name}`))
-    } catch (err) {
-        res.status(500).send(`Message: ${err.message}`)
-    }
-})
-
-app.get("/order/test", async (req, res) => {
-    try {
-        res.status(200).send(info.order())
     } catch (err) {
         res.status(500).send(`Message: ${err.message}`)
     }

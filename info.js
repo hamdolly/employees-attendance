@@ -2,16 +2,16 @@ import mysql from 'mysql2'
 
 const pool = mysql.createPool({
 
-    // host: "localhost",
-    // user: "root",
-    // password: "",
-    // database: "employees"
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "employees"
 
-     host: 'sql12.freesqldatabase.com',
-     port: 3306,
-     user: 'sql12763292',
-     password: 'tyvfHRcTGP',
-     database: 'sql12763292'
+    // host: 'sql12.freesqldatabase.com',
+    // port: 3306,
+    // user: 'sql12763292',
+    // password: 'tyvfHRcTGP',
+    // database: 'sql12763292'
 
 }).promise()
 
@@ -145,6 +145,48 @@ export const getEmployees = async () => {
     return data
 }
 
+export const getFrontEndEmployees = async () => {
+    var sql = `SELECT * FROM employees WHERE (position = "Cashiar" OR position = "Customer service" OR position = "Supervisor") AND BLOCK = 0`
+    var data = []
+    var [employee] = await pool.query(sql)
+    for (var i = 0; i < employee.length; i++) {
+        data.push(
+            {
+                "ID": employee[i].ID,
+                "e_No": employee[i].e_No,
+                "name": employee[i].name,
+                "arabicName": employee[i].AName,
+                "position": employee[i].position,
+                "shift_number": employee[i].shift_number,
+                "gender": employee[i].gender,
+                "checkID": employee[i].checkID
+            }
+        )
+    }
+    return data
+}
+
+export const getSalesEmployees = async () => {
+    var sql = `SELECT * FROM employees WHERE (position = "Sales" OR position = "Sales supervisor") AND BLOCK = 0`
+    var data = []
+    var [employee] = await pool.query(sql)
+    for (var i = 0; i < employee.length; i++) {
+        data.push(
+            {
+                "ID": employee[i].ID,
+                "e_No": employee[i].e_No,
+                "name": employee[i].name,
+                "arabicName": employee[i].AName,
+                "position": employee[i].position,
+                "shift_number": employee[i].shift_number,
+                "gender": employee[i].gender,
+                "checkID": employee[i].checkID
+            }
+        )
+    }
+    return data
+}
+
 export const getEmployeesByEmployeeNumber = async (number) => {
     var sql = `SELECT * FROM employees WHERE e_No = ${number} AND BLOCK = 0`
     var data = []
@@ -167,6 +209,46 @@ export const getEmployeesByEmployeeNumber = async (number) => {
 
 export const getShiftEmployees = async shift => {
     var sql = `SELECT * FROM employees WHERE shift_number = ${shift} AND BLOCK = 0`
+    var data = []
+    var [employee] = await pool.query(sql)
+    for (var i = 0; i < employee.length; i++) {
+        data.push(
+            {
+                "e_No": employee[i].e_No,
+                "name": employee[i].name,
+                "arabicName": employee[i].AName,
+                "position": employee[i].position,
+                "shift_number": employee[i].shift_number,
+                "gender": employee[i].gender
+            }
+        )
+    }
+
+    return data
+}
+
+export const getFrontEndEmployeesByShift = async shift => {
+    var sql = `SELECT * FROM employees WHERE (position = "Cashiar" || position = "Customer service" || position = "Supervisor") AND shift_number = ${shift} AND BLOCK = 0`
+    var data = []
+    var [employee] = await pool.query(sql)
+    for (var i = 0; i < employee.length; i++) {
+        data.push(
+            {
+                "e_No": employee[i].e_No,
+                "name": employee[i].name,
+                "arabicName": employee[i].AName,
+                "position": employee[i].position,
+                "shift_number": employee[i].shift_number,
+                "gender": employee[i].gender
+            }
+        )
+    }
+
+    return data
+}
+
+export const getSalesEmployeesByShift = async shift => {
+    var sql = `SELECT * FROM employees WHERE (position = "Sales" || position = "Sales supervisor") AND shift_number = ${shift} AND BLOCK = 0`
     var data = []
     var [employee] = await pool.query(sql)
     for (var i = 0; i < employee.length; i++) {
@@ -255,6 +337,8 @@ const TProccess = employees => {
         OLadies = [], OLC = 1,
         VLadies = [], VLC = 1,
 
+        cashiersAbsent = [],
+
         absentCashierArabic = [],
 
         PCS = [], PCC = 1,
@@ -296,13 +380,15 @@ const TProccess = employees => {
                 switch (employees[i].gender) {
 
                     case "M":
-                        AMen.push(AMC + "-" + employees[i].name + "\n");
+                        cashiersAbsent.push(AMC + "-" + employees[i].name + "\n");
+                        // AMen.push(AMC + "-" + employees[i].name + "\n");
                         absentCashierArabic.push(AMC + "-" + employees[i].AName + "\n")
                         AMC = AMC + 1;
                         break;
 
                     case "F":
-                        ALadies.push(AMC + "-" + employees[i].name + "\n");
+                        cashiersAbsent.push(AMC + "-" + employees[i].name + "\n");
+                        // ALadies.push(AMC + "-" + employees[i].name + "\n");
                         absentCashierArabic.push(AMC + "-" + employees[i].AName + "\n")
                         AMC = AMC + 1;
                         break;
@@ -369,6 +455,7 @@ const TProccess = employees => {
     return {
         PMen, AMen, OMen, VMen,
         PMC, AMC, OMC, VMC,
+        cashiersAbsent,
         absentCashierArabic,
         PLadies, ALadies, OLadies, VLadies,
         PCS, ACS, OCS, VCS,
@@ -451,13 +538,14 @@ ${TProccess(employees).VLadies.length >= 1 ? TProccess(employees).VLadies.join("
 }
 
 const cashiersAbsent = employees => {
+//${TProccess(employees).AMen.join("")}${TProccess(employees).ALadies.join("")}` :
 
     var details
     TProccess(employees).AMen.length >= 1 ||
         TProccess(employees).ALadies.length >= 1 ?
         details = `
 # MENS & Ladies CASHIERS ABSENT
-${TProccess(employees).AMen.join("")}${TProccess(employees).ALadies.join("")}` :
+${TProccess(employees).cashiersAbsent.join("")}` :
         details = `
 # MENS & Ladies CASHIERS ABSENT
 No one
@@ -690,4 +778,353 @@ export const order = () => {// 2 3 4 5 6 7 8
     }
 
     return "'" + max + "'"
+}
+
+
+
+const TSProccess = employees => {
+    var
+        PDept = [], PDeptC = 1,
+        ADept = [], ADeptC = 1,
+        ODept = [], ODeptC = 1,
+        VDept = [], VDeptC = 1,
+
+        PFresh = [], PFreshC = 1,
+        AFresh = [], AFreshC = 1,
+        OFresh = [], OFreshC = 1,
+        VFresh = [], VFreshC = 1,
+
+        PSM = [], PSMC = 1,
+        ASM = [], ASMC = 1,
+        OSM = [], OSMC = 1,
+        VSM = [], VSMC = 1,
+
+        PSv = [], PSvC = 1,
+        ASv = [], ASvC = 1,
+        OSv = [], OSvC = 1,
+        VSv = [], VSvC = 1,
+
+        absentCounter = 1,
+        absentCashierArabic = []
+
+    for (var i = 0; i < employees.length; i++) {
+        if (employees[i].status == "P") {
+            if (employees[i].position == "Debartment") {
+                PDept.push(PDeptC + "-" + employees[i].name + "\n");
+                PDeptC = PDeptC + 1;
+            } else if (employees[i].position == "Fresh food") {
+                PFresh.push(PFreshC + "-" + employees[i].name + "\n");
+                PFreshC = PFreshC + 1;
+            } else if (employees[i].position == "Supermarket") {
+                PSM.push(PSMC + "-" + employees[i].name + "\n");
+                PSMC = PSMC + 1;
+            } else if (employees[i].position == "Supervisor") {
+                PSv.push(PSvC + "-" + employees[i].name + "\n");
+                PSvC = PSvC + 1;
+            }
+        }
+        else if (employees[i].status == "A") {
+            if (employees[i].position == "Debartment") {
+                ADept.push(absentCounter + "-" + employees[i].name + "\n");
+                absentCashierArabic.push(absentCounter + "-" + employees[i].AName + "\n")
+                absentCounter = absentCounter + 1
+            } else if (employees[i].position == "Fresh food") {
+                AFresh.push(absentCounter + "-" + employees[i].name + "\n");
+                absentCashierArabic.push(absentCounter + "-" + employees[i].AName + "\n")
+                absentCounter = absentCounter + 1
+            } else if (employees[i].position == "Supermarket") {
+                ASM.push(absentCounter + "-" + employees[i].name + "\n");
+                absentCashierArabic.push(absentCounter + "-" + employees[i].AName + "\n")
+                absentCounter = absentCounter + 1
+            } else if (employees[i].position == "Supervisor") {
+                ASv.push(absentCounter + "-" + employees[i].name + "\n");
+                absentCashierArabic.push(absentCounter + "-" + employees[i].AName + "\n")
+                absentCounter = absentCounter + 1
+            }
+        } else if (employees[i].status == "O") {
+            if (employees[i].position == "Debartment") {
+                ODept.push(ODeptC + "-" + employees[i].name + "\n");
+                ODeptC = ODeptC + 1;
+            } else if (employees[i].position == "Fresh food") {
+                OFresh.push(OFreshC + "-" + employees[i].name + "\n");
+                OFreshC = OFreshC + 1;
+            } else if (employees[i].position == "Supermarket") {
+                OSM.push(OSMC + "-" + employees[i].name + "\n");
+                OSMC = OSMC + 1;
+            } else if (employees[i].position == "Supervisor") {
+                OSv.push(OSvC + "-" + employees[i].name + "\n");
+                OSvC = OSvC + 1;
+            }
+        } else if (employees[i].status == "V") {
+            if (employees[i].position == "Debartment") {
+                VDept.push(VDeptC + "-" + employees[i].name + "\n");
+                VDeptC = VDeptC + 1;
+            } else if (employees[i].position == "Fresh food") {
+                VFresh.push(VFreshC + "-" + employees[i].name + "\n");
+                VFreshC = VFreshC + 1;
+            } else if (employees[i].position == "Supermarket") {
+                VSM.push(VSMC + "-" + employees[i].name + "\n");
+                VSMC = VSMC + 1;
+            } else if (employees[i].position == "Supervisor") {
+                VSv.push(VSvC + "-" + employees[i].name + "\n");
+                VSvC = VSvC + 1;
+            }
+        }
+    }
+    return {
+        PDept, PDeptC, PSM, PSMC,
+        ADept, ADeptC, ASM, ASMC,
+        ODept, ODeptC, OSM, OSMC,
+        VDept, VDeptC, VSM, VSMC,
+        PFresh, PFreshC, PSv, PSvC,
+        AFresh, AFreshC, ASv, ASvC,
+        OFresh, OFreshC, OSv, OSvC,
+        VFresh, VFreshC, VSv, VSvC,
+        absentCashierArabic
+    }
+}
+
+
+const Department = employees => {
+    var count, on, off, vacation
+
+    TSProccess(employees).PDept.length >= 1 ||
+        TSProccess(employees).ADept.length >= 1 ||
+        TSProccess(employees).ODept.length >= 1 ||
+        TSProccess(employees).VDept.length >= 1 ?
+
+        count = `
+*Debartment STAFF*
+P           A             O       V     P.O
+${TSProccess(employees).PDept.length}           ${TSProccess(employees).ADept.length}             ${TSProccess(employees).ODept.length}       ${TSProccess(employees).VDept.length}      0`
+        : count = ""
+
+    on = `
+*DEPARTMENT STAFF ON DUTY*
+${TSProccess(employees).PDept.length >= 1 ? TSProccess(employees).PDept.join("") : "No one"}`
+
+    off = `
+*DEPARTMENT OFF DAY* 
+${TSProccess(employees).ODept.length >= 1 ? TSProccess(employees).ODept.join("") : "No one"}`
+
+    TSProccess(employees).VDept.length >= 1 ?
+
+        vacation = `
+*DEPARTMENT VACATION*
+${TSProccess(employees).VDept.length >= 1 ? TSProccess(employees).VDept.join("") : "No one"}`
+        : vacation = ""
+
+    return {
+        count,
+        on,
+        off,
+        vacation
+    }
+}
+
+
+const FreshFood = employees => {
+    var count, on, off, vacation
+
+    TSProccess(employees).PFresh.length >= 1 ||
+        TSProccess(employees).AFresh.length >= 1 ||
+        TSProccess(employees).OFresh.length >= 1 ||
+        TSProccess(employees).VFresh.length >= 1 ?
+
+
+
+        count = `
+*Fresh food STAFF*
+P           A             O       V     P.O
+${TSProccess(employees).PFresh.length}           ${TSProccess(employees).AFresh.length}             ${TSProccess(employees).OFresh.length}       ${TSProccess(employees).VFresh.length}      0`
+        : count = ""
+
+    on = `
+*FRESH FOOD STAFF ON DUTY*
+${TSProccess(employees).PFresh.length >= 1 ? TSProccess(employees).PFresh.join("") : "No one"}`
+
+    off = `
+*FRESH FOOD OFF DAY*
+${TSProccess(employees).OFresh.length >= 1 ? TSProccess(employees).OFresh.join("") : "No one"}`
+
+    TSProccess(employees).VFresh.length >= 1 ?
+
+        vacation = `
+*FRESH FOOD VACATION*
+${TSProccess(employees).VFresh.length >= 1 ? TSProccess(employees).VFresh.join("") : "No one"}`
+        : vacation = ""
+
+    return {
+        count,
+        on,
+        off,
+        vacation
+    }
+}
+
+const Supermarket = employees => {
+    var count, on, off, vacation
+
+    TSProccess(employees).PSM.length >= 1 ||
+        TSProccess(employees).ASM.length >= 1 ||
+        TSProccess(employees).OSM.length >= 1 ||
+        TSProccess(employees).VSM.length >= 1 ?
+
+
+
+        count = `
+*SUPERMARKET STAFF*
+P           A             O       V     P.O
+${TSProccess(employees).PSM.length}           ${TSProccess(employees).ASM.length}             ${TSProccess(employees).OSM.length}       ${TSProccess(employees).VSM.length}      0`
+        : count = ""
+
+    on = `
+*SUPERMARKET STAFF ON DUTY*
+${TSProccess(employees).PSM.length >= 1 ? TSProccess(employees).PSM.join("") : "No one"}`
+
+    off = `
+*SUPERMARKET OFF DOTY*
+${TSProccess(employees).OSM.length >= 1 ? TSProccess(employees).OSM.join("") : "No one"}`
+
+    TSProccess(employees).VSM.length >= 1 ?
+
+        vacation = `
+*SUPERMARKET VACATION*
+${TSProccess(employees).VSM.length >= 1 ? TSProccess(employees).VSM.join("") : "No one"}`
+        : vacation = ""
+
+    return {
+        count,
+        on,
+        off,
+        vacation
+    }
+}
+
+const SalesSupervisor = employees => {
+    var count, on, off, vacation
+
+    TSProccess(employees).PSv.length >= 1 ||
+        TSProccess(employees).ASv.length >= 1 ||
+        TSProccess(employees).OSv.length >= 1 ||
+        TSProccess(employees).VSv.length >= 1 ?
+
+
+
+        count = `
+*SALES SUPERVISOR*
+P           A             O       V     P.O
+${TSProccess(employees).PSv.length}           ${TSProccess(employees).ASv.length}             ${TSProccess(employees).OSv.length}       ${TSProccess(employees).VSv.length}      0`
+        : count = ""
+
+    on = `
+*SUPERVISOR ON DUTY*
+${TSProccess(employees).PSv.length >= 1 ? TSProccess(employees).PSv.join("") : "No one"}`
+
+    off = `
+*SUPERVISOR OFF DOTY*
+${TSProccess(employees).OSv.length >= 1 ? TSProccess(employees).OSv.join("") : "No one"}`
+
+    TSProccess(employees).VSv.length >= 1 ?
+
+        vacation = `
+*SUPERVISOR VACATION*
+${TSProccess(employees).VSv.length >= 1 ? TSProccess(employees).VSv.join("") : "No one"}`
+        : vacation = ""
+
+    return {
+        count,
+        on,
+        off,
+        vacation
+    }
+}
+
+const salesAbsent = employees => {
+
+    var details
+    TSProccess(employees).ADept.length >= 1 ||
+        TSProccess(employees).AFresh.length >= 1 ||
+        TSProccess(employees).ASM.length >= 1 ||
+        TSProccess(employees).ASv.length >= 1
+        ?
+        details = `
+*ABSENT*
+${TSProccess(employees).ADept.join("")}
+${TSProccess(employees).AFresh.join("")}
+${TSProccess(employees).ASM.join("")}
+${TSProccess(employees).ASv.join("")}
+` :
+        details = `
+*ABSENT*
+No one
+        `
+
+    const removeEmptyLines = str => str.split(/\r?\n/).filter(line => line.trim() !== '').join('\n');
+
+    return removeEmptyLines(details)
+}
+
+export const createSalesTemplate = async (employees, STime) => {
+
+    var template =
+        `
+Outlet 3817 date ${TimeDate(STime).today} * 
+${TimeDate(STime).shiftOrder} shift time from ${TimeDate(STime).from} to ${TimeDate(STime).to}
+Total shift P = ${TSProccess(employees).PDept.length + TSProccess(employees).PFresh.length + TSProccess(employees).PSM.length + TSProccess(employees).PSv.length}
+Total shift A = ${TSProccess(employees).ADept.length + TSProccess(employees).AFresh.length + TSProccess(employees).ASM.length + TSProccess(employees).ASv.length}
+Total shift O = ${TSProccess(employees).ODept.length + TSProccess(employees).OFresh.length + TSProccess(employees).OSM.length + TSProccess(employees).OSv.length}
+Total shift V = ${TSProccess(employees).VDept.length + TSProccess(employees).VFresh.length + TSProccess(employees).VSM.length + TSProccess(employees).VSv.length}
+Total shift P.O = 0
+
+${Department(employees).count}
+${FreshFood(employees).count}
+${Supermarket(employees).count}
+${SalesSupervisor(employees).count}
+
+${Department(employees).on}
+${Department(employees).off}
+${Department(employees).vacation}
+
+${FreshFood(employees).on}
+${FreshFood(employees).off}
+${FreshFood(employees).vacation}
+
+${Supermarket(employees).on}
+${Supermarket(employees).off}
+${Supermarket(employees).vacation}
+
+${SalesSupervisor(employees).on}
+${SalesSupervisor(employees).off}
+${SalesSupervisor(employees).vacation}
+
+${salesAbsent(employees)}
+    `
+
+    return template
+}
+
+export const createSalesArabicTemplate = (employees, STime) => {
+    var details
+    TSProccess(employees).ADept.length >= 1 ||
+        TSProccess(employees).AFresh.length >= 1 ||
+        TSProccess(employees).ASM.length >= 1 ?
+        details =
+
+        `
+الفترة/${TimeDate(STime).shiftOrder == "1st" ? "الصباح" : "المساء"}
+التاريخ / ${TimeDate(STime).today}
+الغياب/
+${TSProccess(employees).absentCashierArabic.join("")}
+        `
+        :
+        details =
+        `
+الفترة/${TimeDate(STime).shiftOrder == "1st" ? "الصباح" : "المساء"}
+التاريخ / ${TimeDate(STime).today}
+الغياب/
+لايوجد
+        `
+
+    return details
 }
