@@ -541,8 +541,10 @@ const cashiersAbsent = employees => {
 //${TProccess(employees).AMen.join("")}${TProccess(employees).ALadies.join("")}` :
 
     var details
-    TProccess(employees).AMen.length >= 1 ||
-        TProccess(employees).ALadies.length >= 1 ?
+    // TProccess(employees).AMen.length >= 1 ||
+    //     TProccess(employees).ALadies.length >= 1 ?
+
+        TProccess(employees).cashiersAbsent.length >= 1 ?
         details = `
 # MENS & Ladies CASHIERS ABSENT
 ${TProccess(employees).cashiersAbsent.join("")}` :
