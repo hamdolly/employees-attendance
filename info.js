@@ -473,7 +473,7 @@ const mensCash = employees => {
         count = `
 # MENS CASHIERS ON DUTY
 P           A             O       V     P.O
-${TProccess(employees).PMen.length}           ${TProccess(employees).AMen.length}             ${TProccess(employees).OMen.length}       ${TProccess(employees).VMen.length}      0`
+${TProccess(employees).PMen.length}           ${TProccess(employees).cashiersAbsent.length}             ${TProccess(employees).OMen.length}       ${TProccess(employees).VMen.length}      0`
         : count = ""
 
     on = `
@@ -510,7 +510,7 @@ const ladiesCash = employees => {
         count = `
 # LADIES CASHIERS ON DUTY 
 P           A             O       V     P.O
-${TProccess(employees).PLadies.length}           ${TProccess(employees).ALadies.length}             ${TProccess(employees).OLadies.length}       ${TProccess(employees).VLadies.length}      0`
+${TProccess(employees).PLadies.length}           ${TProccess(employees).cashiersAbsent.length}             ${TProccess(employees).OLadies.length}       ${TProccess(employees).VLadies.length}      0`
         : count = ""
 
     on = `
