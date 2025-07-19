@@ -467,7 +467,7 @@ const mensCash = employees => {
     var count, on, off, vacation
 
     TProccess(employees).PMen.length >= 1 ||
-        TProccess(employees).AMen.length >= 1 ||
+        TProccess(employees).cashiersAbsent.length >= 1 ||
         TProccess(employees).OMen.length >= 1 ||
         TProccess(employees).VMen.length >= 1 ?
         count = `
@@ -504,7 +504,7 @@ const ladiesCash = employees => {
     var count, on, off, vacation
 
     TProccess(employees).PLadies.length >= 1 ||
-        TProccess(employees).ALadies.length >= 1 ||
+        TProccess(employees).cashiersAbsent.length >= 1 ||
         TProccess(employees).OLadies.length >= 1 ||
         TProccess(employees).VLadies.length >= 1 ?
         count = `
@@ -669,7 +669,7 @@ export const createTemplate = (employees, STime) => {
 Outlet 3817 date ${TimeDate(STime).today} *
 ${TimeDate(STime).shiftOrder} shift time from ${TimeDate(STime).from} to ${TimeDate(STime).to}
 Total shift P = ${TProccess(employees).PMen.length + TProccess(employees).PLadies.length + TProccess(employees).PCS.length + TProccess(employees).PSV.length}
-Total shift A = ${TProccess(employees).AMen.length + TProccess(employees).ALadies.length + TProccess(employees).ACS.length + TProccess(employees).ASV.length}
+Total shift A = ${TProccess(employees).cashiersAbsent.length + TProccess(employees).ACS.length + TProccess(employees).ASV.length}
 Total shift O = ${TProccess(employees).OMen.length + TProccess(employees).OLadies.length + TProccess(employees).OCS.length + TProccess(employees).OSV.length}
 Total shift V = ${TProccess(employees).VMen.length + TProccess(employees).VLadies.length + TProccess(employees).VCS.length + TProccess(employees).VSV.length}
 Total shift P.O = 0
