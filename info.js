@@ -340,6 +340,7 @@ const TProccess = employees => {
         cashiersAbsent = [],
 
         absentCashierArabic = [],
+        absentCashierArabicC = 1,
 
         PCS = [], PCC = 1,
         ACS = [], ACC = 1,
@@ -381,29 +382,33 @@ const TProccess = employees => {
 
                     case "M":
                         cashiersAbsent.push(AMC + "-" + employees[i].name + "\n");
-                        // AMen.push(AMC + "-" + employees[i].name + "\n");
-                        absentCashierArabic.push(AMC + "-" + employees[i].AName + "\n")
+                        AMen.push(AMC + "-" + employees[i].name + "\n");
+                        absentCashierArabic.push(absentCashierArabicC + "-" + employees[i].AName + "\n")
                         AMC = AMC + 1;
+                        absentCashierArabicC = absentCashierArabicC + 1
                         break;
 
                     case "F":
                         cashiersAbsent.push(AMC + "-" + employees[i].name + "\n");
                         // ALadies.push(AMC + "-" + employees[i].name + "\n");
-                        absentCashierArabic.push(AMC + "-" + employees[i].AName + "\n")
+                        absentCashierArabic.push(absentCashierArabicC + "-" + employees[i].AName + "\n")
                         AMC = AMC + 1;
                         ALadies = ALadies + 1;
+                        absentCashierArabicC = absentCashierArabicC + 1
                         break;
                 }
             } else if (employees[i].position == "cs") {
                 ACS.push(ACC + "-" + employees[i].name + "\n");
-                absentCashierArabic.push(AMC + "-" + employees[i].AName + "\n")
+                absentCashierArabic.push(absentCashierArabicC + "-" + employees[i].AName + "\n")
                 AMC = AMC + 1;
                 ACC = ACC + 1;
+                absentCashierArabicC = absentCashierArabicC + 1
             } else if (employees[i].position == "sv") {
                 ASV.push(ASC + "-" + employees[i].name + "\n");
-                absentCashierArabic.push(AMC + "-" + employees[i].AName + "\n")
+                absentCashierArabic.push(absentCashierArabicC + "-" + employees[i].AName + "\n")
                 AMC = AMC + 1;
                 ASC = ASC + 1;
+                absentCashierArabicC = absentCashierArabicC + 1
             }
         }
 
