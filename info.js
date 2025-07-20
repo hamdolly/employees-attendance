@@ -400,13 +400,13 @@ const TProccess = employees => {
             } else if (employees[i].position == "cs") {
                 ACS.push(ACC + "-" + employees[i].name + "\n");
                 absentCashierArabic.push(absentCashierArabicC + "-" + employees[i].AName + "\n")
-                // AMC = AMC + 1;
+                AMC = AMC + 1;
                 ACC = ACC + 1;
                 absentCashierArabicC = absentCashierArabicC + 1
             } else if (employees[i].position == "sv") {
                 ASV.push(ASC + "-" + employees[i].name + "\n");
                 absentCashierArabic.push(absentCashierArabicC + "-" + employees[i].AName + "\n")
-                // AMC = AMC + 1;
+                AMC = AMC + 1;
                 ASC = ASC + 1;
                 absentCashierArabicC = absentCashierArabicC + 1
             }
