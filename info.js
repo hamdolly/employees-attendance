@@ -2,16 +2,16 @@ import mysql from 'mysql2'
 
 const pool = mysql.createPool({
 
-    // host: "localhost",
-    // user: "root",
-    // password: "",
-    // database: "employees"
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "employees"
 
-    host: 'sql12.freesqldatabase.com',
-    port: 3306,
-    user: 'sql12763292',
-    password: 'tyvfHRcTGP',
-    database: 'sql12763292'
+    // host: 'sql12.freesqldatabase.com',
+    // port: 3306,
+    // user: 'sql12763292',
+    // password: 'tyvfHRcTGP',
+    // database: 'sql12763292'
 
 }).promise()
 
@@ -400,13 +400,13 @@ const TProccess = employees => {
             } else if (employees[i].position == "cs") {
                 ACS.push(ACC + "-" + employees[i].name + "\n");
                 absentCashierArabic.push(absentCashierArabicC + "-" + employees[i].AName + "\n")
-                AMC = AMC + 1;
+                // AMC = AMC + 1;
                 ACC = ACC + 1;
                 absentCashierArabicC = absentCashierArabicC + 1
             } else if (employees[i].position == "sv") {
                 ASV.push(ASC + "-" + employees[i].name + "\n");
                 absentCashierArabic.push(absentCashierArabicC + "-" + employees[i].AName + "\n")
-                AMC = AMC + 1;
+                // AMC = AMC + 1;
                 ASC = ASC + 1;
                 absentCashierArabicC = absentCashierArabicC + 1
             }
@@ -709,8 +709,8 @@ ${supervisor(employees).vacation}
 
 export const createArabicTemplate = (employees, STime) => {
     var details
-    TProccess(employees).AMen.length >= 1 ||
-        TProccess(employees).ALadies.length >= 1 ?
+    TProccess(employees).AMen.length > 0 ||
+        TProccess(employees).ALadies.length > 0 ?
         details =
 
         `
