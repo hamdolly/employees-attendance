@@ -2,16 +2,16 @@ import mysql from 'mysql2'
 
 const pool = mysql.createPool({
 
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "employees"
+    // host: "localhost",
+    // user: "root",
+    // password: "",
+    // database: "employees"
 
-    // host: 'sql12.freesqldatabase.com',
-    // port: 3306,
-    // user: 'sql12763292',
-    // password: 'tyvfHRcTGP',
-    // database: 'sql12763292'
+    host: 'sql12.freesqldatabase.com',
+    port: 3306,
+    user: 'sql12763292',
+    password: 'tyvfHRcTGP',
+    database: 'sql12763292'
 
 }).promise()
 
